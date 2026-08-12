@@ -1,0 +1,44 @@
+name: Release Windows
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        run: npm install
+      - name: Verify version
+        shell: pwsh
+        run: |
+          $tag = $env:GITHUB_REF_NAME.TrimStart('v')
+          $pkg = (Get-Content package.json | ConvertFrom-Json).version
+          $tauri = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
+          if ($pkg -ne $tag -or $tauri -ne $tag) { throw "Version mismatch: tag=$tag package=$pkg tauri=$tauri" }
+      - name: Build and publish Tauri release
+        uses: tauri-apps/tauri-action@v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: NATRA Management ${{ github.ref_name }}
+          releaseBody: |
+            NATRA Management desktop release.
+
+            Please test the installer before commercial distribution.
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: false

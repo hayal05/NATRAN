@@ -1,0 +1,14 @@
+{
+  "name": "NATRA Management",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {"version": "stable"}
+  },
+  "postCreateCommand": "npm install",
+  "forwardPorts": [1420],
+  "customizations": {
+    "vscode": {
+      "extensions": ["rust-lang.rust-analyzer", "tauri-apps.tauri-vscode"]
+    }
+  }
+}
