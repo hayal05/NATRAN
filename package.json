@@ -14,7 +14,7 @@
     "chart.js": "^4.5.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.8.0",
+    "@tauri-apps/cli": "^2.11.5",
     "vite": "^7.1.0"
   }
 }
